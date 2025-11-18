@@ -12,6 +12,19 @@ set "FULL_PATH=%~dp0%SQL_FILE%"
 
 echo Connect to %DB_HOST%:%DB_PORT%...
 
+:: Checking the connection to PostgreSQL
+psql -h %DB_HOST% -p %DB_PORT% -U %DB_USER% -d postgres -c "SELECT 1;" >nul 2>&1
+if errorlevel 1 (
+    echo ERROR: Cannot connect to PostgreSQL server!
+    echo Please make sure that:
+    echo 1. PostgreSQL is installed and running
+    echo 2. Server is listening on %DB_HOST%:%DB_PORT%
+    echo 3. User '%DB_USER%' exists and password is correct
+    echo.
+    pause
+    exit /b 1
+)
+
 :: Checking the existence of a database
 psql -h %DB_HOST% -p %DB_PORT% -U %DB_USER% -d postgres -t -A -c "SELECT 1 FROM pg_database WHERE datname = '%DB_NAME%';" | find "1" >nul
 
