@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Обновляем пакеты перед выполнением скриптов
-echo "Обновляем список пакетов..."
+# Update packages before running scripts
+echo "Updating the package list..."
 apt update
 
-# Список скриптов для выполнения
+# List of scripts to execute
 SCRIPTS=(
     "http://lineage2js.github.io/scripts/install_tools.sh"
     "http://lineage2js.github.io/scripts/install_db.sh"
@@ -15,7 +15,7 @@ SCRIPTS=(
 
 for script_url in "${SCRIPTS[@]}"; do
     script_name=$(basename "$script_url")
-    echo "Выполняем $script_name..."
+    echo "Execute $script_name..."
     wget -q -O - "$script_url" | bash
     echo "----------------------------------------"
 done
