@@ -51,6 +51,7 @@ After=network.target
 Type=simple
 WorkingDirectory=$APP_DIR
 Environment=NODE_ENV=production
+Environment=STATIC_FILES_PATH=/var/www/html/lineage2js-web-ui/
 ExecStart=/usr/bin/node server.js
 Restart=on-failure
 RestartSec=5
