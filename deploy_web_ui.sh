@@ -4,7 +4,7 @@ set -e  # Break execution on errors
 
 REPO_URL="https://github.com/Lineage2JS/web-ui.git"
 PROJECT_DIR="web-ui"
-TARGET_DIR="/var/www/html/web-ui"
+TARGET_DIR="/var/www/html/lineage2js-web-ui"
 BUILD_DIR="dist"
 
 echo "=== Start web-ui deployment ==="
