@@ -51,7 +51,7 @@ After=network.target
 Type=simple
 WorkingDirectory=$APP_DIR
 Environment=NODE_ENV=production
-ExecStart=/usr/bin/node src/index.js
+ExecStart=/usr/bin/node server.js
 Restart=on-failure
 RestartSec=5
 
