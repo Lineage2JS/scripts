@@ -10,8 +10,8 @@ SCRIPTS=(
     "http://lineage2js.github.io/scripts/install_tools.sh"
     "http://lineage2js.github.io/scripts/install_db.sh"
     "http://lineage2js.github.io/scripts/setup_db.sh"
-    "http://lineage2js.github.io/scripts/deploy_web_server.sh"
-    "http://lineage2js.github.io/scripts/deploy_web_ui.sh"
+    "http://lineage2js.github.io/scripts/install_web_server.sh"
+    "http://lineage2js.github.io/scripts/install_web_ui.sh"
 )
 
 for script_url in "${SCRIPTS[@]}"; do
