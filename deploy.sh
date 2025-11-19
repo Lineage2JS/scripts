@@ -2,7 +2,8 @@
 
 # Update packages before running scripts
 echo "Updating the package list..."
-apt update
+sudo apt update
+sudo apt upgrade -y
 
 # List of scripts to execute
 SCRIPTS=(
