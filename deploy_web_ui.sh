@@ -1,43 +1,59 @@
 #!/bin/bash
 
-set -e  # Прерывать выполнение при ошибках
+set -e  # Break execution on errors
 
-echo "=== Начало развертывания web-ui проекта ==="
+REPO_URL="https://github.com/Lineage2JS/web-ui.git"
+PROJECT_DIR="web-ui"
+TARGET_DIR="/var/www/html/web-ui"
+BUILD_DIR="dist"
 
-# 1) Клонирование репозитория
+echo "=== Start web-ui deployment ==="
+
+# Cloning a repository
 echo "1. Клонирование репозитория..."
-if [ -d "web-ui" ]; then
-    echo "Папка web-ui уже существует, удаляем..."
-    rm -rf web-ui
+if [ -d "$PROJECT_DIR" ]; then
+    echo "Папка $PROJECT_DIR уже существует, удаляем..."
+    rm -rf "$PROJECT_DIR"
 fi
-git clone https://github.com/Lineage2JS/web-ui.git
-cd web-ui
+git clone "$REPO_URL"
+cd "$PROJECT_DIR"
 
-# 2) Установка зависимостей
+# Installing
 echo "2. Установка зависимостей npm..."
 npm install
 
-# 3) Сборка проекта
+# Build
 echo "3. Сборка проекта..."
 npm run build
 
 # 4) Создание целевой папки
 echo "4. Создание целевой папки..."
-sudo mkdir -p /var/www/html/web-ui/
+sudo mkdir -p "$TARGET_DIR"
 
 # 5) Копирование собранных файлов
 echo "5. Копирование собранных файлов..."
-sudo cp -r dist/* /var/www/html/web-ui/
+sudo cp -r "$BUILD_DIR"/* "$TARGET_DIR"/
+
+# 6) Удаление папки проекта после развертывания
+echo "6. Удаление папки проекта после развертывания..."
+cd ..
+if [ -d "$PROJECT_DIR" ]; then
+    echo "Удаляем папку $PROJECT_DIR..."
+    rm -rf "$PROJECT_DIR"
+    echo "Папка $PROJECT_DIR успешно удалена"
+else
+    echo "Папка $PROJECT_DIR уже удалена или не существует"
+fi
 
 # Проверка результата
-echo "6. Проверка результата..."
-if [ -d "/var/www/html/web-ui" ] && [ "$(ls -A /var/www/html/web-ui/)" ]; then
-    echo "Файлы успешно скопированы в /var/www/html/web-ui/"
+echo "7. Проверка результата..."
+if [ -d "$TARGET_DIR" ] && [ "$(ls -A "$TARGET_DIR")" ]; then
+    echo "Файлы успешно скопированы в $TARGET_DIR"
     echo "Содержимое папки:"
-    ls -la /var/www/html/web-ui/
+    ls -la "$TARGET_DIR"
 else
-    echo "Ошибка: папка /var/www/html/web-ui/ пуста или не существует"
+    echo "Ошибка: папка $TARGET_DIR пуста или не существует"
     exit 1
 fi
 
-echo "=== Развертывание завершено успешно! ==="
+echo "=== Deployment completed successfully! ==="
