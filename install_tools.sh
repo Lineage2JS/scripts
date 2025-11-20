@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e  # Terminate execution on any error
+set -e  # Break execution on errors
 
 echo "=== Installing tools ==="
 
