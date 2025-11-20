@@ -93,4 +93,3 @@ rm -f "$FULL_PATH"
 
 echo ""
 echo "Done!"
-read -p "Press Enter to continue..."
