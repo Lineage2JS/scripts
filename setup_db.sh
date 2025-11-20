@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e  # Прерывать выполнение при ошибках
+set -e  # Break execution on errors
 
 # Настройки базы данных
 DB_HOST="localhost"
