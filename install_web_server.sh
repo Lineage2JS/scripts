@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -e  # Break execution on errors
 
 # Конфигурация
 APP_NAME="lineage2js-web-server"
