@@ -1,57 +1,53 @@
 #!/bin/bash
 
-set -e  # Break execution on errors
+set -e # Break execution on errors
 
-# Конфигурация
+# Configuration
 APP_NAME="lineage2js-login-server"
 APP_DIR="/opt/$APP_NAME"
 REPO_URL="https://github.com/Lineage2JS/login-server.git"
 
-echo "=== Развертывание Lineage2 Login Server ==="
+echo "=== Deploying Lineage2 Login Server ==="
 
-# Проверка прав
+# Checking rights
 if [[ $EUID -ne 0 ]]; then
-    echo "Ошибка: Запустите скрипт с sudo"
+    echo "Error: Run script with sudo"
     exit 1
 fi
 
-# Проверка Node.js
+# Checking Node.js
 if ! command -v node &> /dev/null; then
-    echo "Ошибка: Node.js не установлен"
+    echo "Error: Node.js is not installed"
     exit 1
 fi
 
-echo "Node.js: $(node --version)"
-
-# Проверка npm
+# Checking npm
 if ! command -v npm &> /dev/null; then
-    echo "Ошибка: npm не установлен"
+    echo "Error: npm is not installed"
     exit 1
 fi
 
-echo "npm: $(npm --version)"
-
-# Создание директории
-echo "Создание директории..."
+# Creating a directory
+echo "Creating a directory..."
 mkdir -p $APP_DIR
 
-# Клонирование/обновление репозитория
-echo "Клонирование репозитория..."
+# Cloning/updating a repository
+echo "Cloning a repository..."
 cd $APP_DIR
 if [ -d ".git" ]; then
-    echo "Обновление существующего репозитория..."
+    echo "Updating an existing repository..."
     git pull
 else
-    echo "Клонирование нового репозитория..."
+    echo "Cloning a new repository..."
     git clone $REPO_URL .
 fi
 
-# Установка зависимостей
-echo "Установка зависимостей..."
+# Installing dependencies
+echo "Installing dependencies..."
 npm ci --only=production
 
-# Создание службы
-echo "Создание systemd службы..."
+# Creating a service
+echo "Creating a systemd service..."
 cat > /etc/systemd/system/$APP_NAME.service << EOF
 [Unit]
 Description=Lineage2JS Login Server
@@ -71,14 +67,14 @@ Group=root
 WantedBy=multi-user.target
 EOF
 
-# Запуск службы
-echo "Запуск службы..."
+# Starting the service
+echo "Starting the service..."
 systemctl daemon-reload
 systemctl enable $APP_NAME
 systemctl restart $APP_NAME
 
-echo "=== Готово! ==="
-echo "Приложение: $APP_DIR"
-echo "Управление: systemctl status $APP_NAME"
-echo "Логи: journalctl -u $APP_NAME -f"
-echo "Порт по умолчанию: 2106 (проверьте конфигурацию в $APP_DIR/config/)"
+echo "=== Done! ==="
+echo "App: $APP_DIR"
+echo "Control: systemctl status $APP_NAME"
+echo "Logs: journalctl -u $APP_NAME -f"
+echo "Default port: 2106 (check configuration in $APP_DIR/config/)"
