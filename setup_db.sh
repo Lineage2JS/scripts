@@ -2,7 +2,7 @@
 
 set -e # Break execution on errors
 
-# Настройки базы данных
+# Configuration
 DB_HOST="localhost"
 DB_PORT="5432"
 DB_USER="postgres"
@@ -11,16 +11,16 @@ DB_NAME="l2db"
 SQL_URL="https://lineage2js.github.io/scripts/l2db.sql"
 SQL_FILE="l2db.sql"
 
-# Экспорт пароля для psql
+# Export password for psql
 export PGPASSWORD="$DB_PASSWORD"
 
-# Полный путь к SQL файлу
+# Full path to the SQL file
 FULL_PATH="$(pwd)/$SQL_FILE"
 
 echo "Connect to $DB_HOST:$DB_PORT..."
 
-# Проверка подключения к PostgreSQL
-echo "Проверка подключения к PostgreSQL..."
+# Checking the connection to PostgreSQL
+echo "Checking the connection to PostgreSQL..."
 if ! psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "SELECT 1;" >/dev/null 2>&1; then
     echo "ERROR: Cannot connect to PostgreSQL server!"
     echo "Please make sure that:"
@@ -32,10 +32,10 @@ if ! psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "SELECT 1;" >
     exit 1
 fi
 
-echo "✓ Подключение к PostgreSQL успешно"
+echo "Connection to PostgreSQL successful..."
 
-# Проверка существования базы данных
-echo "Проверка существования базы данных $DB_NAME..."
+# Checking if a database exists
+echo "Checking existence of database $DB_NAME..."
 DB_EXISTS=$(psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -t -A -c "SELECT 1 FROM pg_database WHERE datname = '$DB_NAME';")
 
 if [ "$DB_EXISTS" = "1" ]; then
@@ -44,9 +44,9 @@ if [ "$DB_EXISTS" = "1" ]; then
     exit 1
 fi
 
-echo "✓ База данных $DB_NAME не существует, продолжаем..."
+echo "Database $DB_NAME does not exist, continuing..."
 
-# Скачивание SQL файла
+# Downloading SQL file
 echo "Downloading SQL file from $SQL_URL..."
 if ! wget -q "$SQL_URL" -O "$SQL_FILE"; then
     echo "Error: Failed to download SQL file!"
@@ -60,9 +60,9 @@ if [ ! -f "$FULL_PATH" ]; then
     exit 1
 fi
 
-echo "✓ SQL файл успешно скачан"
+echo "SQL file downloaded successfully..."
 
-# Создание базы данных
+# Creating a database
 echo "Creating database $DB_NAME..."
 if ! psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -c "CREATE DATABASE $DB_NAME;" >/dev/null 2>&1; then
     echo "Error: Failed to create database $DB_NAME!"
@@ -70,9 +70,9 @@ if ! psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -c "CREATE DATABASE $DB_NAME
     exit 1
 fi
 
-echo "✓ База данных $DB_NAME создана"
+echo "Database $DB_NAME created..."
 
-# Импорт SQL файла
+# Importing an SQL file
 echo "Importing SQL file $SQL_FILE..."
 if ! psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -q -f "$FULL_PATH"; then
     echo "Error: Failed to import SQL file!"
@@ -80,16 +80,16 @@ if ! psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -q -f "$FULL_P
     exit 1
 fi
 
-echo "✓ SQL файл успешно импортирован"
+echo "SQL file imported successfully..."
 
-# Вывод списка созданных таблиц
+# List of created tables
 echo ""
 echo "Created tables in database $DB_NAME:"
 psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -t -A -c "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name;"
 
-# Удаление временного файла
+# Deleting a temporary file
 echo "Deleting temporary file..."
 rm -f "$FULL_PATH"
 
 echo ""
-echo "Done!"
+echo "=== Done! ==="
