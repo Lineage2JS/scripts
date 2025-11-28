@@ -7,52 +7,70 @@ PROJECT_DIR="web-ui"
 TARGET_DIR="/var/www/html/lineage2js-web-ui"
 BUILD_DIR="dist"
 
-echo "=== Start web-ui deployment ==="
+echo "=== Deploying web-ui ==="
 
-# Cloning a repository
-echo "1. Клонирование репозитория..."
+# Checking rights
+if [[ $EUID -ne 0 ]]; then
+    echo "Error: Run script with sudo"
+    exit 1
+fi
+
+# Checking Node.js
+if ! command -v node &> /dev/null; then
+    echo "Error: Node.js is not installed"
+    exit 1
+fi
+
+# Checking npm
+if ! command -v npm &> /dev/null; then
+    echo "Error: npm is not installed"
+    exit 1
+fi
+
+# Cloning/updating a repository
+echo "Cloning a repository..."
 if [ -d "$PROJECT_DIR" ]; then
-    echo "Папка $PROJECT_DIR уже существует, удаляем..."
+    echo "The $PROJECT_DIR folder already exists, delete it..."
     rm -rf "$PROJECT_DIR"
 fi
 git clone "$REPO_URL"
 cd "$PROJECT_DIR"
 
-# Installing
-echo "2. Установка зависимостей npm..."
+# Installing dependencies
+echo "Installing dependencies..."
 npm install
 
 # Build
-echo "3. Сборка проекта..."
+echo "Build..."
 npm run build
 
-# 4) Создание целевой папки
-echo "4. Создание целевой папки..."
+# Creating a directory
+echo "Creating a directory..."
 sudo mkdir -p "$TARGET_DIR"
 
-# 5) Копирование собранных файлов
-echo "5. Копирование собранных файлов..."
+# Copying collected files
+echo "Copying collected files..."
 sudo cp -r "$BUILD_DIR"/* "$TARGET_DIR"/
 
-# 6) Удаление папки проекта после развертывания
-echo "6. Удаление папки проекта после развертывания..."
+# Deleting a project folder after deployment
+echo "Deleting a project folder after deployment..."
 cd ..
 if [ -d "$PROJECT_DIR" ]; then
-    echo "Удаляем папку $PROJECT_DIR..."
+    echo "Delete the $PROJECT_DIR folder..."
     rm -rf "$PROJECT_DIR"
-    echo "Папка $PROJECT_DIR успешно удалена"
+    echo "The $PROJECT_DIR folder was successfully deleted."
 else
-    echo "Папка $PROJECT_DIR уже удалена или не существует"
+    echo "The $PROJECT_DIR folder has already been deleted or does not exist."
 fi
 
-# Проверка результата
-echo "7. Проверка результата..."
+# Checking the result
+echo "Checking the result..."
 if [ -d "$TARGET_DIR" ] && [ "$(ls -A "$TARGET_DIR")" ]; then
-    echo "Файлы успешно скопированы в $TARGET_DIR"
-    echo "Содержимое папки:"
+    echo "Files successfully copied to $TARGET_DIR"
+    echo "Folder contents:"
     ls -la "$TARGET_DIR"
 else
-    echo "Ошибка: папка $TARGET_DIR пуста или не существует"
+    echo "Error: The $TARGET_DIR folder is empty or does not exist."
     exit 1
 fi
 
