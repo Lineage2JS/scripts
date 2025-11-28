@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e  # Break execution on errors
+set -e # Break execution on errors
 
 REPO_URL="https://github.com/Lineage2JS/web-ui.git"
 PROJECT_DIR="web-ui"
