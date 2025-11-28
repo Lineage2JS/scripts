@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e  # Break execution on errors
+set -e # Break execution on errors
 
 # Update packages before running scripts
 echo "Updating the package list..."
