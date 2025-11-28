@@ -2,46 +2,52 @@
 
 set -e # Break execution on errors
 
-# Конфигурация
+# Configuration
 APP_NAME="lineage2js-web-server"
 APP_DIR="/opt/$APP_NAME"
 REPO_URL="https://github.com/Lineage2JS/web-server.git"
 
-echo "=== Развертывание Lineage2 Web Server ==="
+echo "=== Deploying Lineage2 Web Server ==="
 
-# Проверка прав
+# Checking rights
 if [[ $EUID -ne 0 ]]; then
-    echo "Ошибка: Запустите скрипт с sudo"
+    echo "Error: Run script with sudo"
     exit 1
 fi
 
-# Проверка Node.js
+# Checking Node.js
 if ! command -v node &> /dev/null; then
-    echo "Ошибка: Node.js не установлен"
+    echo "Error: Node.js is not installed"
     exit 1
 fi
 
-echo "Node.js: $(node --version)"
+# Checking npm
+if ! command -v npm &> /dev/null; then
+    echo "Error: npm is not installed"
+    exit 1
+fi
 
-# Создание директории
-echo "Создание директории..."
+# Creating a directory
+echo "Creating a directory..."
 mkdir -p $APP_DIR
 
-# Клонирование/обновление репозитория
-echo "Клонирование репозитория..."
+# Cloning/updating a repository
+echo "Cloning a repository..."
 cd $APP_DIR
 if [ -d ".git" ]; then
+    echo "Updating an existing repository..."
     git pull
 else
+    echo "Cloning a new repository..."
     git clone $REPO_URL .
 fi
 
-# Установка зависимостей
-echo "Установка зависимостей..."
+# Installing dependencies
+echo "Installing dependencies..."
 npm ci --only=production
 
-# Создание службы
-echo "Создание systemd службы..."
+# Creating a service
+echo "Creating a systemd service..."
 cat > /etc/systemd/system/$APP_NAME.service << EOF
 [Unit]
 Description=Lineage2JS Web Server
@@ -60,13 +66,13 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
-# Запуск службы
-echo "Запуск службы..."
+# Starting the service
+echo "Starting the service..."
 systemctl daemon-reload
 systemctl enable $APP_NAME
 systemctl restart $APP_NAME
 
-echo "=== Готово! ==="
-echo "Приложение: $APP_DIR"
-echo "Управление: systemctl status $APP_NAME"
-echo "Логи: journalctl -u $APP_NAME -f"
+echo "=== Done! ==="
+echo "App: $APP_DIR"
+echo "Control: systemctl status $APP_NAME"
+echo "Logs: journalctl -u $APP_NAME -f"
