@@ -1,13 +1,13 @@
 SET client_encoding = 'UTF8';
 
-CREATE TABLE public.accounts (
+CREATE TABLE accounts (
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     login character varying NOT NULL,
     password character varying NOT NULL,
     access_level integer DEFAULT 0
 );
 
-CREATE TABLE public.characters (
+CREATE TABLE characters (
     object_id integer PRIMARY KEY,
     user_login character varying(30) NOT NULL,
     character_name character varying(30) NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE public.characters (
     created_at timestamp without time zone NOT NULL
 );
 
-CREATE TABLE public.gameservers (
+CREATE TABLE gameservers (
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     gameserver_id integer NOT NULL,
     host character varying(20) NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE public.gameservers (
     server_type integer DEFAULT 1 NOT NULL
 );
 
-CREATE TABLE public.items (
+CREATE TABLE items (
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     object_id integer NOT NULL,
     item_id integer NOT NULL,
@@ -73,13 +73,13 @@ CREATE TABLE public.items (
     equip_slot integer
 );
 
-CREATE TABLE public.object_id_registry (
+CREATE TABLE object_id_registry (
     registry_id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     registry_name character varying NOT NULL,
     last_object_id integer NOT NULL
 );
 
-CREATE TABLE public.scheduled_tasks (
+CREATE TABLE scheduled_tasks (
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     type character varying,
     payload json,
@@ -89,7 +89,7 @@ CREATE TABLE public.scheduled_tasks (
     created_type character varying
 );
 
-CREATE TABLE public.skills (
+CREATE TABLE skills (
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     skill_id integer NOT NULL,
     skill_level integer NOT NULL,
