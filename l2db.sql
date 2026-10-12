@@ -85,7 +85,7 @@ CREATE TABLE scheduled_tasks (
     payload json,
     scheduled_at timestamp without time zone,
     status character varying,
-    created_account_id character varying,
+    created_by character varying,
     created_type character varying
 );
 
