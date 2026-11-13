@@ -28,7 +28,6 @@ CREATE TABLE characters (
     pk integer NOT NULL,
     karma integer NOT NULL,
     class_id integer NOT NULL,
-    class_name character varying NOT NULL,
     race_id integer NOT NULL,
     str integer NOT NULL,
     dex integer NOT NULL,
